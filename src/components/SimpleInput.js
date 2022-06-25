@@ -2,7 +2,7 @@ import { useState } from "react";
 
 
 const SimpleInput = (props) => {
-  const [enteredname, setEnteredName] = useState('');
+  const [enteredName, setEnteredName] = useState('');
 
   // listening on every key-stroke and set the update state 
   const inputCHangeHandler = (event) => {
@@ -14,11 +14,19 @@ const SimpleInput = (props) => {
     // the send request when form is submitted
     event.preventDefault();
 
-    console.log(enteredname);
+    // check the validation 
+    // trim() removes the white space at the beginning and end 
+    // if this enteredName is empty the second code would not execute 
+    // return will stop the second part of that code
+    if (enteredName.trim() === '') {
+      return;
+    }
+
+    console.log(enteredName);
 
     // set input to the empty string when form is already submitted 
     setEnteredName('');
-  }  
+  }
 
   return (
     <form onSubmit={formSubmissionHandler}>
@@ -28,7 +36,7 @@ const SimpleInput = (props) => {
           type='text'
           id='name'
           onChange={inputCHangeHandler} //listening to every key-stroke
-          value={enteredname}  // set value useState's arrays first meaning after form submitted 
+          value={enteredName}  // set value useState's arrays first meaning after form submitted 
         />
       </div>
       <div className="form-actions">
