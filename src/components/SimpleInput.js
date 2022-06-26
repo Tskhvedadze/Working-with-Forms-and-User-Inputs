@@ -1,42 +1,42 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState('');
+  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
+  const [enteredNameTouched, setEnteredNameTouched] = useState(false);
 
-  // we need another state for input validation
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(true);
+  useEffect(() => {
+    if(enteredNameIsValid){
+      console.log('Name input is Valid!');
+    }
+  }, [enteredNameIsValid])
 
-  // listening on every key-stroke and set the update state 
   const inputCHangeHandler = (event) => {
     setEnteredName(event.target.value);
-    
+
     setEnteredNameIsValid(true);
   }
 
   const formSubmissionHandler = (event) => {
-    // prevent forms default behavior , which is to 
-    // the send request when form is submitted
     event.preventDefault();
 
-    // check the validation 
-    // trim() removes the white space at the beginning and end 
-    // if this enteredName is empty the second code would not execute 
-    // return will stop the second part of that code
+    setEnteredNameTouched(true);
+
+    // Check The Validation 
     if (enteredName.trim() === '') {
       setEnteredNameIsValid(false);
       return;
     }
-
     setEnteredNameIsValid(true);
 
     console.log(enteredName);
 
-    // set input to the empty string when form is already submitted 
     setEnteredName('');
   }
-  // now here we change input style if its not valid
-  const formValidationClass = enteredNameIsValid ? 'form-control' : 'form-control invalid input' ;
+
+  const nameTouchedIsNotValid = !enteredNameIsValid && enteredNameTouched;
+
+  const formValidationClass = nameTouchedIsNotValid ? 'form-control invalid input' : 'form-control';
 
   return (
     <form onSubmit={formSubmissionHandler}>
@@ -45,11 +45,10 @@ const SimpleInput = (props) => {
         <input
           type='text'
           id='name'
-          onChange={inputCHangeHandler} //listening to every key-stroke
-          value={enteredName}  // set value useState's arrays first meaning after form submitted 
+          onChange={inputCHangeHandler}
+          value={enteredName}
         />
-        {/* if enteredNameIsValid is false output this error message otherwise nothing */}
-        {!enteredNameIsValid && <p className="error-text">Name must not be empty!</p>}
+        {nameTouchedIsNotValid && <p className="error-text">Name must not be empty!</p>}
       </div>
       <div className="form-actions">
         <button>Submit</button>
