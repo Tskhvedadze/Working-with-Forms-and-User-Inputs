@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState('');
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
 
-  useEffect(() => {
-    if(enteredNameIsValid){
-      console.log('Name input is Valid!');
-    }
-  }, [enteredNameIsValid])
+  const enteredNameIsValid = enteredName.trim() !== '';
+  const nameInputIsInValid = !enteredNameIsValid && enteredNameTouched;
 
   const inputCHangeHandler = (event) => {
     setEnteredName(event.target.value);
 
-    setEnteredNameIsValid(true);
+    setEnteredNameTouched(true);
+  }
+
+  const nameInputBlurHandler = (event) => {
+    setEnteredNameTouched(true);
   }
 
   const formSubmissionHandler = (event) => {
@@ -22,21 +22,17 @@ const SimpleInput = (props) => {
 
     setEnteredNameTouched(true);
 
-    // Check The Validation 
-    if (enteredName.trim() === '') {
-      setEnteredNameIsValid(false);
+    // Check The Validation - if it's not valid i wanna return 
+    if (!enteredNameIsValid) {
       return;
     }
-    setEnteredNameIsValid(true);
-
     console.log(enteredName);
-
+    
     setEnteredName('');
+    setEnteredNameTouched(false);
   }
 
-  const nameTouchedIsNotValid = !enteredNameIsValid && enteredNameTouched;
-
-  const formValidationClass = nameTouchedIsNotValid ? 'form-control invalid input' : 'form-control';
+  const formValidationClass = nameInputIsInValid ? 'form-control invalid input' : 'form-control';
 
   return (
     <form onSubmit={formSubmissionHandler}>
@@ -46,9 +42,10 @@ const SimpleInput = (props) => {
           type='text'
           id='name'
           onChange={inputCHangeHandler}
+          onBlur={nameInputBlurHandler}
           value={enteredName}
         />
-        {nameTouchedIsNotValid && <p className="error-text">Name must not be empty!</p>}
+        {nameInputIsInValid && <p className="error-text">Name must not be empty!</p>}
       </div>
       <div className="form-actions">
         <button>Submit</button>
