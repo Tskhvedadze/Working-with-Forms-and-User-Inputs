@@ -7,6 +7,12 @@ const SimpleInput = (props) => {
   const enteredNameIsValid = enteredName.trim() !== '';
   const nameInputIsInValid = !enteredNameIsValid && enteredNameTouched;
 
+  let formIsValid = false;
+
+  if (enteredNameIsValid) {
+    formIsValid = true;
+  }
+
   const inputCHangeHandler = (event) => {
     setEnteredName(event.target.value);
 
@@ -27,12 +33,14 @@ const SimpleInput = (props) => {
       return;
     }
     console.log(enteredName);
-    
+
     setEnteredName('');
     setEnteredNameTouched(false);
   }
 
   const formValidationClass = nameInputIsInValid ? 'form-control invalid input' : 'form-control';
+
+  const buttonTextChange = !formIsValid ? 'check input' : 'Submit';
 
   return (
     <form onSubmit={formSubmissionHandler}>
@@ -41,6 +49,7 @@ const SimpleInput = (props) => {
         <input
           type='text'
           id='name'
+          placeholder={!nameInputIsInValid ? 'Your Name' : ''}
           onChange={inputCHangeHandler}
           onBlur={nameInputBlurHandler}
           value={enteredName}
@@ -48,7 +57,7 @@ const SimpleInput = (props) => {
         {nameInputIsInValid && <p className="error-text">Name must not be empty!</p>}
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid}>{buttonTextChange}</button>
       </div>
     </form>
   );
